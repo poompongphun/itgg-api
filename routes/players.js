@@ -17,7 +17,7 @@ router.get("/", async (req, res, next) => {
     })
     .select({ _id: false, __v: false })
     .limit(limit)
-    .sort({ coin: 1 });
+    .sort({ coin: -1 });
   res.json(players);
 });
 
@@ -55,7 +55,7 @@ router.post("/:id/coin", async (req, res, next) => {
           {
             $inc: { coin: validation.value.coin },
             $push: {
-              coinLog: {
+              coinlog: {
                 coin: validation.value.coin,
                 giver: validation.value.giver,
                 event: validation.value.event,

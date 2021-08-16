@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
         required: false,
         default: 0,
     },
-    coinLog: [
+    coinlog: [
         {
             _id: false,
             event: {
