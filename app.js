@@ -7,8 +7,9 @@ const dotenv = require("dotenv");
 const mongoose = require('mongoose');
 const cors = require('cors')
 
-const indexRouter = require('./routes/index');
-const playersRouter = require('./routes/players');
+const indexRouter = require('./routes/index.routes');
+const authRouter = require('./routes/auth.routes');
+const adminRouter = require('./routes/admin.routes');
 
 const app = express();
 dotenv.config();
@@ -36,7 +37,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/players', playersRouter);
+app.use('/auth', authRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

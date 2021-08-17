@@ -1,28 +1,8 @@
-var express = require("express");
-var router = express.Router();
-const player = require("../model/players");
-const playerValidation = require("../Middleware/validation/players").players;
-
-/* GET player data. */
-router.get("/", async (req, res, next) => {
-  const searchQuery = req.query.search || "";
-  const limit = parseInt(escape(req.query.limit)) || 10;
-  const players = await player
-    .find({
-      $or: [
-        { std_id: { $regex: new RegExp(RegExp(searchQuery), "i") } },
-        { name: { $regex: new RegExp(RegExp(searchQuery), "i") } },
-        { nickname: { $regex: new RegExp(RegExp(searchQuery), "i") } },
-      ],
-    })
-    .select({ _id: false, __v: false })
-    .limit(limit)
-    .sort({ coin: -1 });
-  res.json(players);
-});
+const player = require("../../Models/players");
+const playerValidation = require("../../Middleware/validation/players.middleware").players;
 
 /* create player */
-router.post("/", async (req, res, next) => {
+const createPlayers = async (req, res, next) => {
   const validation = playerValidation.createPlayer(req.body);
   if (validation.hasOwnProperty("error"))
     return res.status(400).json(validation.error.details[0].message);
@@ -40,10 +20,9 @@ router.post("/", async (req, res, next) => {
       res.status(400).json(error);
     }
   }
-});
-
+};
 /* add coins */
-router.post("/:id/coin", async (req, res, next) => {
+const addCoins = async (req, res, next) => {
   const validation = playerValidation.addCoin(req.body);
   if (validation.hasOwnProperty("error"))
     return res.status(400).json(validation.error.details[0].message);
@@ -57,7 +36,7 @@ router.post("/:id/coin", async (req, res, next) => {
             $push: {
               coinlog: {
                 coin: validation.value.coin,
-                giver: validation.value.giver,
+                giver: `${req.user.name} (${req.user.nickname})`,
                 event: validation.value.event,
               },
             },
@@ -72,6 +51,5 @@ router.post("/:id/coin", async (req, res, next) => {
       res.status(400).json(error);
     }
   }
-});
-
-module.exports = router;
+};
+module.exports = { createPlayers, addCoins };

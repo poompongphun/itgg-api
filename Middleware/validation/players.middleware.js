@@ -14,7 +14,6 @@ const addCoin = (data) => {
     const schema = Joi.object({
         coin: Joi.number().required(),
         event: Joi.string().max(256).required(),
-        giver: Joi.string().max(256).required(),
     })
     return schema.validate(data)
 }
