@@ -15,10 +15,8 @@ const userSchema = new mongoose.Schema({
     required: false,
     min: 18,
     max: 18,
-    index: true,
-    unique: true,
     match: /^[0-9]+$/,
-    default: ""
+    default: "",
   },
   name: {
     type: String,
