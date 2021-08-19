@@ -10,6 +10,7 @@ const cors = require('cors')
 const indexRouter = require('./routes/index.routes');
 const authRouter = require('./routes/auth.routes');
 const adminRouter = require('./routes/admin.routes');
+const discordRouter = require('./routes/discord.routes');
 
 const app = express();
 dotenv.config();
@@ -39,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
+app.use('/discord', discordRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

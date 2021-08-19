@@ -10,7 +10,4 @@ router.get('/', function(req, res, next) {
 /* GET player data. */
 router.get("/players", playerController.getPlayers);
 
-//
-router.post("/register", playerController.registerDiscord);
-
 module.exports = router;
