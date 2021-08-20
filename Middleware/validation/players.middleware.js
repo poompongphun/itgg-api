@@ -22,20 +22,5 @@ const addCoin = (data) => {
   return schema.validate(data);
 };
 
-const registerDiscord = (data) => {
-  const schema = Joi.object({
-    std_id: Joi.string()
-      .min(8)
-      .max(8)
-      .pattern(new RegExp("^[0-9]+$"))
-      .required(),
-    discord_id: Joi.string()
-      .min(18)
-      .max(18)
-      .pattern(new RegExp("^[0-9]+$"))
-      .required(),
-  });
-  return schema.validate(data);
-};
 
-module.exports.players = { createPlayer, addCoin, registerDiscord };
+module.exports.players = { createPlayer, addCoin };

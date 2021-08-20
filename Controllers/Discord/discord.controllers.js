@@ -1,10 +1,9 @@
 const player = require("../../Models/players");
-const playersValidation =
-  require("../../Middleware/validation/players.middleware").players;
+const discordValidation = require("../../Middleware/validation/discord.middleware");
 
 /* register player with discord. */
 const registerDiscord = async (req, res, next) => {
-  const validation = playersValidation.registerDiscord(req.body);
+  const validation = discordValidation.registerDiscord(req.body);
   if (validation.hasOwnProperty("error"))
     return res.status(400).json(validation.error.details[0].message);
   else {
@@ -36,4 +35,42 @@ const registerDiscord = async (req, res, next) => {
   }
 };
 
-module.exports = { registerDiscord };
+const addCoinDiscord = async (req, res, next) => {
+  const validation = discordValidation.addCoinDiscord(req.body);
+  if (validation.hasOwnProperty("error"))
+    return res.status(400).json(validation.error.details[0].message);
+  else {
+    const addCoins = await player.updateMany(
+      {
+        discord_id: { $in: validation.value.discord_id },
+      },
+      {
+        $inc: { coin: validation.value.coin },
+        $push: {
+          coinlog: {
+            coin: validation.value.coin,
+            giver: validation.value.giver || "",
+            event: validation.value.event || "",
+          },
+        },
+      }
+    );
+    if (addCoins) {
+      const DiscordRegis = await player
+        .find({
+          discord_id: { $in: validation.value.discord_id },
+        })
+        .select({ _id: false, discord_id: true });
+      const success = [];
+      const fail = [];
+      validation.value.discord_id.forEach((element) => {
+        if (DiscordRegis.find(({ discord_id }) => discord_id == element))
+          success.push(element);
+        else fail.push(element);
+      });
+      res.json({ coin: validation.value.coin, success, fail });
+    } else res.status(400).json("something went wrong");
+  }
+};
+
+module.exports = { registerDiscord, addCoinDiscord };
