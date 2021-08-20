@@ -19,7 +19,6 @@ const registerDiscord = async (req, res, next) => {
           },
           {
             discord_id: validation.value.discord_id,
-            nickname: validation.value.nickname
           },
           {
             new: true,
@@ -33,7 +32,6 @@ const registerDiscord = async (req, res, next) => {
             std_id: validation.value.std_id,
             discord_id: validation.value.discord_id,
             name: validation.value.name,
-            nickname: validation.value.nickname,
             house: validation.value.house,
             year: validation.value.year
           });

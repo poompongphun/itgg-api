@@ -10,7 +10,6 @@ const createPlayers = async (req, res, next) => {
     const players = new player({
       std_id: validation.value.std_id,
       name: validation.value.name,
-      nickname: validation.value.nickname,
       house: validation.value.house,
     });
     try {
@@ -36,7 +35,7 @@ const addCoins = async (req, res, next) => {
             $push: {
               coinlog: {
                 coin: validation.value.coin,
-                giver: `${req.user.name} (${req.user.nickname})`,
+                giver: `${req.user.name}`,
                 event: validation.value.event,
               },
             },

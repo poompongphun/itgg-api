@@ -9,7 +9,6 @@ const getPlayers = async (req, res, next) => {
     { std_id: { $regex: searchQuery } },
     { name: { $regex: searchQuery } },
     { discord_id: { $regex: searchQuery } },
-    { nickname: { $regex: searchQuery } },
   ];
   const query =
     req.query.gate !== undefined

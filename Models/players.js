@@ -23,11 +23,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     max: 256,
   },
-  nickname: {
-    type: String,
-    required: true,
-    max: 256,
-  },
   house: {
     type: String,
     required: true,

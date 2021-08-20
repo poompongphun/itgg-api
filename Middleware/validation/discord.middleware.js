@@ -13,7 +13,6 @@ const registerDiscord = (data) => {
       .pattern(new RegExp("^[0-9]+$"))
       .required(),
     name: Joi.string().max(256).required(),
-    nickname: Joi.string().max(256),
     house: Joi.string().max(16).required(),
     year: Joi.number().required(),
   });
