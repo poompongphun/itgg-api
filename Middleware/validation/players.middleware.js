@@ -8,7 +8,6 @@ const createPlayer = (data) => {
       .pattern(new RegExp("^[0-9]+$"))
       .required(),
     name: Joi.string().max(256).required(),
-    nickname: Joi.string().max(256).required(),
     house: Joi.string().max(16).required(),
   });
   return schema.validate(data);
