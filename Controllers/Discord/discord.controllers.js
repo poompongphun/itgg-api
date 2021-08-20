@@ -33,7 +33,7 @@ const registerDiscord = async (req, res, next) => {
             discord_id: validation.value.discord_id,
             name: validation.value.name,
             house: validation.value.house,
-            year: validation.value.year
+            year: validation.value.year,
           });
           try {
             const createPlayer = await players.save();
@@ -87,4 +87,18 @@ const addCoinDiscord = async (req, res, next) => {
   }
 };
 
-module.exports = { registerDiscord, addCoinDiscord };
+const removeDiscord = async (req, res, next) => {
+  try {
+    const removeDiscord = await player.findOneAndUpdate(
+      { discord_id: req.params.id },
+      { discord_id: "" }
+    );
+    if (removeDiscord) {
+      res.json("Your discord is unlinked");
+    } else res.status(404).json("Your discord is not registered");
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
+
+module.exports = { registerDiscord, addCoinDiscord, removeDiscord };

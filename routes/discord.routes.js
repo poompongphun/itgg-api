@@ -8,4 +8,7 @@ router.post("/register", discordController.registerDiscord);
 // add coins with discord
 router.post("/coins", discordController.addCoinDiscord);
 
+// remove discord
+router.delete("/register/:id", discordController.removeDiscord);
+
 module.exports = router;
