@@ -19,6 +19,7 @@ const registerDiscord = async (req, res, next) => {
           },
           {
             discord_id: validation.value.discord_id,
+            nickname: validation.value.nickname
           },
           {
             new: true,
@@ -27,7 +28,22 @@ const registerDiscord = async (req, res, next) => {
         );
         if (findPlayer) {
           res.json(findPlayer);
-        } else res.status(404).json("Not found player or registered");
+        } else {
+          const players = new player({
+            std_id: validation.value.std_id,
+            discord_id: validation.value.discord_id,
+            name: validation.value.name,
+            nickname: validation.value.nickname,
+            house: validation.value.house,
+            year: validation.value.year
+          });
+          try {
+            const createPlayer = await players.save();
+            res.json(createPlayer);
+          } catch (error) {
+            res.status(400).json(error);
+          }
+        }
       } catch (error) {
         res.status(400).json(error);
       }
