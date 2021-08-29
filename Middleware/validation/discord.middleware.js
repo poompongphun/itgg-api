@@ -31,4 +31,14 @@ const addCoinDiscord = (data) => {
   return schema.validate(data);
 };
 
-module.exports = { registerDiscord, addCoinDiscord };
+const addGateCoinDiscord = (data) => {
+  const schema = Joi.object({
+    and: Joi.number().required(),
+    or: Joi.number().required(),
+    nor: Joi.number().required(),
+    not: Joi.number().required(),
+  });
+  return schema.validate(data);
+};
+
+module.exports = { registerDiscord, addCoinDiscord, addGateCoinDiscord };
