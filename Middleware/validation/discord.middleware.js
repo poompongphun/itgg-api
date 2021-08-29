@@ -33,10 +33,12 @@ const addCoinDiscord = (data) => {
 
 const addGateCoinDiscord = (data) => {
   const schema = Joi.object({
-    and: Joi.number().required(),
-    or: Joi.number().required(),
-    nor: Joi.number().required(),
-    not: Joi.number().required(),
+    and: Joi.number(),
+    or: Joi.number(),
+    nor: Joi.number(),
+    not: Joi.number(),
+    event: Joi.string().max(256),
+    giver: Joi.string().max(256),
   });
   return schema.validate(data);
 };

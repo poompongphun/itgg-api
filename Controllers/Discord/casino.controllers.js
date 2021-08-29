@@ -6,32 +6,43 @@ const addGateScore = async (req, res, next) => {
   if (validation.hasOwnProperty("error"))
     return res.status(400).json(validation.error.details[0].message);
   else {
-    const bulkUpdateOps = [
-      {
-        updateOne: {
-          filter: { discord_id: "000000000000000000" },
-          update: { $inc: { coin: validation.value.and } },
-        },
-      },
-      {
-        updateOne: {
-          filter: { discord_id: "000000000000000001" },
-          update: { $inc: { coin: validation.value.or } },
-        },
-      },
-      {
-        updateOne: {
-          filter: { discord_id: "000000000000000002" },
-          update: { $inc: { coin: validation.value.nor } },
-        },
-      },
-      {
-        updateOne: {
-          filter: { discord_id: "000000000000000003" },
-          update: { $inc: { coin: validation.value.not } },
-        },
-      },
-    ];
+    const bulkUpdateOps = [];
+    if (validation.value.and && validation.value.and != 0)
+      bulkUpdateOps.push(
+        pushUpdate(
+          "000000000000000000",
+          validation.value.and,
+          validation.value.giver,
+          validation.value.event
+        )
+      );
+    if (validation.value.or && validation.value.or != 0)
+      bulkUpdateOps.push(
+        pushUpdate(
+          "000000000000000001",
+          validation.value.or,
+          validation.value.giver,
+          validation.value.event
+        )
+      );
+    if (validation.value.nor && validation.value.nor != 0)
+      bulkUpdateOps.push(
+        pushUpdate(
+          "000000000000000002",
+          validation.value.nor,
+          validation.value.giver,
+          validation.value.event
+        )
+      );
+    if (validation.value.not && validation.value.not != 0)
+      bulkUpdateOps.push(
+        pushUpdate(
+          "000000000000000003",
+          validation.value.not,
+          validation.value.giver,
+          validation.value.event
+        )
+      );
 
     try {
       const updateGate = await player.bulkWrite(bulkUpdateOps, {
@@ -45,5 +56,23 @@ const addGateScore = async (req, res, next) => {
     }
   }
 };
+
+function pushUpdate(id, coins, giver, event) {
+  return {
+    updateOne: {
+      filter: { discord_id: id },
+      update: {
+        $inc: { coin: coins },
+        $push: {
+          coinlog: {
+            coin: coins,
+            giver: giver || "",
+            event: event || "",
+          },
+        },
+      },
+    },
+  };
+}
 
 module.exports = { addGateScore };
