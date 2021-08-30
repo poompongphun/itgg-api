@@ -43,4 +43,22 @@ const addGateCoinDiscord = (data) => {
   return schema.validate(data);
 };
 
-module.exports = { registerDiscord, addCoinDiscord, addGateCoinDiscord };
+const addBuffDiscord = (data) => {
+  const schema = Joi.object({
+    discord_id: Joi.string()
+      .min(18)
+      .max(18)
+      .pattern(new RegExp("^[0-9]+$"))
+      .required(),
+    name: Joi.string().max(512).required(),
+    exp: Joi.number().required(),
+  });
+  return schema.validate(data);
+};
+
+module.exports = {
+  registerDiscord,
+  addCoinDiscord,
+  addGateCoinDiscord,
+  addBuffDiscord,
+};

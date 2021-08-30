@@ -1,5 +1,7 @@
 const player = require("../../Models/players");
+const buff = require("../../Models/buff");
 const discordValidation = require("../../Middleware/validation/discord.middleware");
+const moment = require("moment");
 
 const addGateScore = async (req, res, next) => {
   const validation = discordValidation.addGateCoinDiscord(req.body);
@@ -57,6 +59,32 @@ const addGateScore = async (req, res, next) => {
   }
 };
 
+const addBuff = async (req, res, next) => {
+  const validation = discordValidation.addBuffDiscord(req.body);
+  if (validation.hasOwnProperty("error"))
+    return res.status(400).json(validation.error.details[0].message);
+  else {
+    const buffs = new buff({
+      discord_id: validation.value.discord_id,
+      buff_name: validation.value.name,
+      expireAt: moment().add(validation.value.exp, "seconds"),
+    });
+    try {
+      const createBuffs = await buffs.save();
+      res.json(createBuffs);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  }
+};
+
+const getBuff = async (req, res, next) => {
+  const buffs = await buff.find({ discord_id: req.params.id });
+  if (buffs) {
+    res.json(buffs);
+  } else res.status(404).json('Not Found Buff');
+};
+
 function pushUpdate(id, coins, giver, event) {
   return {
     updateOne: {
@@ -75,4 +103,4 @@ function pushUpdate(id, coins, giver, event) {
   };
 }
 
-module.exports = { addGateScore };
+module.exports = { addGateScore, addBuff, getBuff };

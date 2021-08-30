@@ -13,5 +13,7 @@ router.post("/coins", discordController.addCoinDiscord);
 router.delete("/register/:id", discordController.removeDiscord);
 
 router.post("/gateCoin", casinoController.addGateScore);
+router.post("/addBuff", casinoController.addBuff);
+router.get("/getBuff/:id", casinoController.getBuff);
 
 module.exports = router;
