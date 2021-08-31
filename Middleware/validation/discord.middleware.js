@@ -20,10 +20,12 @@ const registerDiscord = (data) => {
 };
 
 const addCoinDiscord = (data) => {
-  const schema = Joi.object({
-    discord_id: Joi.array().items(
-      Joi.string().min(18).max(18).pattern(new RegExp("^[0-9]+$"))
-    ),
+  const schema = Joi.array().items({
+    discord_id: Joi.string()
+      .min(18)
+      .max(18)
+      .pattern(new RegExp("^[0-9]+$"))
+      .required(),
     coin: Joi.number().required(),
     event: Joi.string().max(256),
     giver: Joi.string().max(256),

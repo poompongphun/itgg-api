@@ -54,36 +54,37 @@ const addCoinDiscord = async (req, res, next) => {
   if (validation.hasOwnProperty("error"))
     return res.status(400).json(validation.error.details[0].message);
   else {
-    const addCoins = await player.updateMany(
-      {
-        discord_id: { $in: validation.value.discord_id },
-      },
-      {
-        $inc: { coin: validation.value.coin },
-        $push: {
-          coinlog: {
-            coin: validation.value.coin,
-            giver: validation.value.giver || "",
-            event: validation.value.event || "",
-          },
-        },
-      }
-    );
-    if (addCoins) {
-      const DiscordRegis = await player
-        .find({
-          discord_id: { $in: validation.value.discord_id },
-        })
-        .select({ _id: false, discord_id: true });
-      const success = [];
-      const fail = [];
-      validation.value.discord_id.forEach((element) => {
-        if (DiscordRegis.find(({ discord_id }) => discord_id == element))
-          success.push(element);
-        else fail.push(element);
+    const updateData = [];
+    const checkId = []
+    validation.value.forEach((add) => {
+      checkId.push(add.discord_id)
+      updateData.push(
+        pushUpdate(add.discord_id, add.coin, add.giver, add.event)
+      );
+    });
+    try {
+      const updateGate = await player.bulkWrite(updateData, {
+        ordered: true,
+        w: 1,
       });
-      res.json({ coin: validation.value.coin, success, fail });
-    } else res.status(400).json("something went wrong");
+      if (updateGate) {
+        const DiscordRegis = await player
+          .find({
+            discord_id: { $in: checkId },
+          })
+          .select({ _id: false, discord_id: true });
+        const success = [];
+        const fail = [];
+        checkId.forEach((element) => {
+          if (DiscordRegis.find(({ discord_id }) => discord_id == element))
+            success.push(element);
+          else fail.push(element);
+        });
+        res.json({ success, fail });
+      } else res.status(400).json("something went wrong");
+    } catch (error) {
+      res.status(400).json(error);
+    }
   }
 };
 
@@ -100,5 +101,23 @@ const removeDiscord = async (req, res, next) => {
     res.status(400).json(error);
   }
 };
+
+function pushUpdate(id, coins, giver, event) {
+  return {
+    updateOne: {
+      filter: { discord_id: id },
+      update: {
+        $inc: { coin: coins },
+        $push: {
+          coinlog: {
+            coin: coins,
+            giver: giver || "",
+            event: event || "",
+          },
+        },
+      },
+    },
+  };
+}
 
 module.exports = { registerDiscord, addCoinDiscord, removeDiscord };
