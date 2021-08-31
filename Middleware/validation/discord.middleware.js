@@ -45,11 +45,9 @@ const addGateCoinDiscord = (data) => {
 
 const addBuffDiscord = (data) => {
   const schema = Joi.object({
-    discord_id: Joi.string()
-      .min(18)
-      .max(18)
-      .pattern(new RegExp("^[0-9]+$"))
-      .required(),
+    discord_id: Joi.array().items(
+      Joi.string().min(18).max(18).pattern(new RegExp("^[0-9]+$"))
+    ),
     name: Joi.string().max(512).required(),
     exp: Joi.number().required(),
   });

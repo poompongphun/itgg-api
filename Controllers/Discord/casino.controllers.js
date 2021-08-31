@@ -64,13 +64,18 @@ const addBuff = async (req, res, next) => {
   if (validation.hasOwnProperty("error"))
     return res.status(400).json(validation.error.details[0].message);
   else {
-    const buffs = new buff({
-      discord_id: validation.value.discord_id,
-      buff_name: validation.value.name,
-      expireAt: moment().add(validation.value.exp, "seconds"),
-    });
     try {
-      const createBuffs = await buffs.save();
+      const expireAt = moment().add(validation.value.exp, "seconds");
+      const buffName = validation.value.name;
+      const insertData = [];
+      validation.value.discord_id.forEach((id) => {
+        insertData.push({
+          discord_id: id,
+          buff_name: buffName,
+          expireAt: expireAt,
+        });
+      });
+      const createBuffs = await buff.insertMany(insertData);
       res.json(createBuffs);
     } catch (error) {
       res.status(400).json(error);
@@ -82,7 +87,7 @@ const getBuff = async (req, res, next) => {
   const buffs = await buff.find({ discord_id: req.params.id });
   if (buffs) {
     res.json(buffs);
-  } else res.status(404).json('Not Found Buff');
+  } else res.status(404).json("Not Found Buff");
 };
 
 function pushUpdate(id, coins, giver, event) {
