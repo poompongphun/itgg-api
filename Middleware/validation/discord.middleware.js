@@ -56,9 +56,43 @@ const addBuffDiscord = (data) => {
   return schema.validate(data);
 };
 
+const tableCasino = (data) => {
+  const schema = Joi.object({
+    discord_id: Joi.string()
+      .min(18)
+      .max(18)
+      .pattern(new RegExp("^[0-9]+$"))
+      .required(),
+    bet: Joi.number().required(),
+    profit: Joi.number().required(),
+    result: Joi.string().max(256),
+    emoji: Joi.array().items({
+      icon: Joi.string().max(256),
+      member: Joi.array().items(
+        Joi.string().min(18).max(18).pattern(new RegExp("^[0-9]+$"))
+      ),
+    }),
+  });
+  return schema.validate(data);
+};
+
+const updateTable = (data) => {
+  const schema = Joi.object({
+    discord_id: Joi.string()
+      .min(18)
+      .max(18)
+      .pattern(new RegExp("^[0-9]+$"))
+      .required(),
+    result: Joi.string().max(256),
+  });
+  return schema.validate(data);
+};
+
 module.exports = {
   registerDiscord,
   addCoinDiscord,
   addGateCoinDiscord,
   addBuffDiscord,
+  tableCasino,
+  updateTable,
 };
