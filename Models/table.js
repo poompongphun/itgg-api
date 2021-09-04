@@ -7,6 +7,8 @@ const tableSchema = new mongoose.Schema({
     min: 18,
     max: 18,
     match: /^[0-9]+$/,
+    index: true,
+    unique: true,
     default: "",
   },
   bet: {
